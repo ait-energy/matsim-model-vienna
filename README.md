@@ -14,8 +14,8 @@ with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim*
 Download the model:
 
 1. Download or clone this repository
-2. Download files too large for hosting on GitHub and put them it into the folder created in the previous step
-   - [full population (password: matsim12)](https://nextcloud.ait.ac.at/index.php/s/T3K2ybHd5QxpR2e)
+2. Download files (*password: matsim12*) too large for hosting on GitHub and put them it into the folder created in the previous step
+   - [full population](https://nextcloud.ait.ac.at/index.php/s/T3K2ybHd5QxpR2e)
    - optional: [output events of both the full and the open access model](https://nextcloud.ait.ac.at/index.php/s/aRpQnw9afLcKEBq) for further visualization / analysis
 
 Run the simulation:
