@@ -9,18 +9,22 @@ with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim*
 > and is not ready for precise traffic planning activities (contrary to the full model).
 
 
-## Run the Model
+## First Steps
 
-To run the simulation:
+Download the model:
 
 1. Download or clone this repository
-2. Download [the full population (password: matsim12)](https://nextcloud.ait.ac.at/index.php/s/T3K2ybHd5QxpR2e) and put it into the folder created in the previous step
-   - It is too large for hosting on GitHub
-3. Optionally change the population in the config:
+2. Download files too large for hosting on GitHub and put them it into the folder created in the previous step
+   - [full population (password: matsim12)](https://nextcloud.ait.ac.at/index.php/s/T3K2ybHd5QxpR2e)
+   - optional: [output events of both the full and the open access model](https://nextcloud.ait.ac.at/index.php/s/aRpQnw9afLcKEBq) for further visualization / analysis
+
+Run the simulation:
+
+1. Optionally change the population in the config:
    - Default is the full population (12.5% of the mobile population)
    - For a quick test you can use the small population containing 500 randomly selected agents of the full population
-4. Download the [MATSim 12.0 release](https://matsim.org/downloads)
-5. Run the MATSim GUI
+2. Download the [MATSim 12.0 release](https://matsim.org/downloads)
+3. Run the MATSim GUI
    - Select the configuration file
    - Set `Memory` to 4 GB for the full population (or 2 GB for the small population)
    - Start the simulation
@@ -46,6 +50,13 @@ To run the simulation:
 ![Area covered by the MATSim Model Vienna](matsim_model_vienna_area.jpg)
 
 Area covered by the MATSim Model Vienna, light-blue areas contain facilities.
+
+### Calibration
+
+For calibration we used cadyts and data from ~180 car traffic counters spread over the whole simulation area.
+
+![Modal split of the calibrated models](modal_split.svg)
+
 
 ## Highlights
 
@@ -85,8 +96,8 @@ the **open access model only uses MATSim car routing and teleportation of all ot
 
 The open access model
 
-1. is coarsely calibrated (+/-4% difference to the actual modal split).
-2. tends to underestimate trip durations and distances by around  30% due to teleporting instead of actual route calculation all modes but car.
+1. is more coarsely calibrated (+/-4% difference to the actual modal split).
+2. tends to underestimate trip durations and distances by around 30% due to teleporting instead of actual route calculation all modes but car.
 
 
 ## Literature
@@ -100,7 +111,14 @@ If you use the MATSim Model Vienna and write a scientific paper about it, please
 
 - Müller, J., Straub, M., Naqvi, A.,  Richter, G., Peer, S., & Rudloff, C. (2021). *MATSim Model Vienna: Analyzing the Socioeconomic Impacts for Different Fleet Sizes and Pricing Schemes of Shared Autonomous Electric Vehicles*. Proceedings of the 100th Annual Meeting of the Transportation Research Board. Available on [ResearchGate](https://www.researchgate.net/publication/349212535_MATSim_Model_Vienna_Analyzing_the_Socioeconomic_Impacts_for_Different_Fleet_Sizes_and_Pricing_Schemes_of_Shared_Autonomous_Electric_Vehicles).
 
+
 ## License
 
 The open access MATSim Model Vienna is published under license [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0).
 You may use it for all non-commercial activities, and must give appropriate credit, provide a link to the license, and indicate if changes were made.
+
+
+## Contact
+
+If you have any questions, remarks, or even collaboration ideas, please get in touch:
+either via GitHub or via email to `markus.straub` or `johannes.mueller` (both ending on `ait.ac.at`).
