@@ -55,6 +55,9 @@ Area covered by the MATSim Model Vienna, light-blue areas contain facilities.
 
 For calibration we used cadyts and data from ~180 car traffic counters spread over the whole simulation area.
 
+This plot shows the modal split for all inhabitants of the City of Vienna,
+i.e. excluding agents with a home location in Lower Austria.
+
 ![Modal split of the calibrated models](modal_split.svg)
 
 
@@ -96,7 +99,7 @@ the **open access model only uses MATSim car routing and teleportation of all ot
 
 The open access model
 
-1. is more coarsely calibrated (+/-4% difference to the actual modal split).
+1. is more coarsely calibrated.
 2. tends to underestimate trip durations and distances by around 30% due to teleporting instead of actual route calculation all modes but car.
 
 
