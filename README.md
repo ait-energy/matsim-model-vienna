@@ -110,7 +110,11 @@ The open access model
 
 ### Preferred Citation
 
-If you use the MATSim Model Vienna and write a scientific paper about it, please cite the following paper as a reference.
+If you use the MATSim Model Vienna and write a scientific paper about it, please cite the following paper as a reference:
+
+- Müller, J., Straub, M., Richter, G., Rudloff, C. (2022). *Integration of Different Mobility Behaviors and Intermodal Trips in MATSim*. Sustainability. 2022; 14(1):428. https://doi.org/10.3390/su14010428
+
+Further reading:
 
 - Müller, J., Straub, M., Naqvi, A.,  Richter, G., Peer, S., & Rudloff, C. (2021). *MATSim Model Vienna: Analyzing the Socioeconomic Impacts for Different Fleet Sizes and Pricing Schemes of Shared Autonomous Electric Vehicles*. Proceedings of the 100th Annual Meeting of the Transportation Research Board. Available on [ResearchGate](https://www.researchgate.net/publication/349212535_MATSim_Model_Vienna_Analyzing_the_Socioeconomic_Impacts_for_Different_Fleet_Sizes_and_Pricing_Schemes_of_Shared_Autonomous_Electric_Vehicles).
 
