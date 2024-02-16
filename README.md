@@ -3,11 +3,25 @@
 This repository contains data for a traffic simulation for the city and agglomeration of Vienna
 with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim**ulation.
 
-> Note, that the **open access model** is a **reduced version of the full model available at [AIT](http://www.ait.ac.at)**,
-> with intermodal routing of the agents' trips being the most important advantage of the full model.
-> The open access model is provided in the spirit of open scientific research
-> and is not ready for precise traffic planning activities (contrary to the full model).
+> **Note:** the 2022 version (covering a smaller area and using proprietary intermodal routing with Ariadne)
+> is still available: [MATSim Model Vienna 2022](https://github.com/ait-energy/matsim-model-vienna/tree/2022)
 
+## TODOs before release
+
+- [ ] finalize calibration
+- [ ] update calibration explanations
+- [ ] extract random population with 500 agents
+- [ ] zip normal population and output events (of last calibration iteration = baseline pop)
+  - [ ] upload to nextcloud
+- [ ] update modal split numbers and plot
+- [ ] do we have a new main citation for our model? (that does not have the ariadne/intermodal stuff as main topic)
+- [ ] what are the highlights of the model? (cordons?)
+
+TODO document how we handled
+- [ ] through / destination / source traffic:
+  - [ ] for Austrian citizens: via cordon points
+  - [ ] for foreign citizens: Grundbelastung
+- [ ] commercial traffic (Grundbelastung X%)
 
 ## First Steps
 
@@ -15,15 +29,15 @@ Download the model:
 
 1. Download or clone this repository
 2. Download files (*password: matsim12*) too large for hosting on GitHub and put them it into the folder created in the previous step
-   - [full population](https://nextcloud.ait.ac.at/index.php/s/T3K2ybHd5QxpR2e)
-   - optional: [output events of both the full and the open access model](https://nextcloud.ait.ac.at/index.php/s/aRpQnw9afLcKEBq) for further visualization / analysis
+   - [full population](https://nextcloud.ait.ac.at/TODO)
+   - optional: [output events of both the full and the open access model](https://nextcloud.ait.ac.at/TODO) for further visualization / analysis
 
 Run the simulation:
 
 1. Optionally change the population in the config:
    - Default is the full population (12.5% of the mobile population)
    - For a quick test you can use the small population containing 500 randomly selected agents of the full population
-2. Download the [MATSim 12.0 release](https://matsim.org/downloads)
+2. Download [MATSim](https://matsim.org/downloads) 14 or newer
 3. Run the MATSim GUI
    - Select the configuration file
    - Set `Memory` to 4 GB for the full population (or 2 GB for the small population)
@@ -34,24 +48,46 @@ Run the simulation:
 
 ## The Model in a Nutshell
 
-- **Simulation Area:** Vienna and surroundings in a 30km radius (total population: 2.33 million, area: 4170 km²)
-- **Network**: 156k links and 71k nodes extracted from [OpenStreetMap](https://www.openstreetmap.org) with [pt2matsim](https://github.com/matsim-org/pt2matsim)
-- **Facilities:** 435k locations extracted from [OpenStreetMap](https://www.openstreetmap.org) and the [geostat population density grid (2011)](https://ec.europa.eu/eurostat/de/web/gisco/geodata/reference-data/population-distribution-demography/geostat)
-- **Population synthesis**: based on the Austrian mobility survey *Österreich Unterwegs 2013/14*
-- **Population**: 200k agents represent 12.5% of the mobile population older than 17 years. The agents use the MATSim modes walk, bike, pt, car.
-- **Routing**:
-  - open access model: MATSim car routing and teleporting for all other modes
-  - full model: *Ariadne* intermodal routing framework calculating exact travel times for all modes and also allowing for intermodal trips such as park and ride
-- **Mode choice model:** based on travel survey from WU/BOKU Vienna; 10 subpopulations with different utility functions. Assignment of an agent to a subpopulation depends on socio-economic characteristics, see below for further details
-- **Calibration:** 180 count stations for traffic volumes, normalized error for peak hours:
-  - open access model: 0.4
-  - full model: 0.33
+- Aims to represent traffic in 2019 just before the COVID pandemic
+- **Simulation Area:** Vienna and surroundings (between 40 and 80km away)
+  - area: 11,700 km²
+  - total population: 3.05 million (2013-01), 3.275 million (2020-01)
+- **Network**: 375k links and 169k nodes extracted from [OpenStreetMap](https://www.openstreetmap.org) (2021) and OGD transit timetables (2022) with [pt2matsim](https://github.com/matsim-org/pt2matsim)
+- **Facilities:** 654k locations extracted mainly from [OpenStreetMap](https://www.openstreetmap.org)
+- **Population synthesis**: based on the Austrian mobility survey *Österreich Unterwegs 2013/14* with [oeu_popsynth](https://gitlab-intern.ait.ac.at/energy/commons/matsim/oeu_popsynth), scaled up to population of 2020
+- **Population**: 332k agents represent 12.5% of the mobile population older than 5 years.
+  - Agents use the MATSim modes walk, bike, pt, car, ride.
+- **Routing**: SwissRailRaptor (not *Ariadne* as in the [2022 version](https://github.com/ait-energy/matsim-model-vienna/tree/2022))
+- **Mode choice model:** 10 subpopulations, based on Greene and Hensher (2003).
+- **Calibration:** on modal split derived from synthesized population
+  - TODO update (also counts!)
+
 
 ![Area covered by the MATSim Model Vienna](matsim_model_vienna_area.jpg)
 
 Area covered by the MATSim Model Vienna, light-blue areas contain facilities.
+The area contains Vienna and large parts of Lower Austria as well as parts of Burgenland
+(including St. Pölten, Wiener Neustadt, Hollabrunn, Mistelbach,..)
+where people tend to commute to Vienna.
+
+The meter-based projection used for all files is `EPSG:3416`.
+
+### Facilities
+
+Facilities were used for population synthesis and compiled from the following sources.
+
+**Home**: based on [BEV addresses (Adresse Relationale Tabellen - Stichtagsdaten 15.07.2015)](https://www.bev.gv.at/portal/page?_pageid=713,2601271&_dad=portal&_schema=PORTAL)
+and [geostat population density](https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/population-distribution-demography/geostat) based on  census 2011-10-31.
+
+**Work**: based on [Gemeindeergebnisse der Abgestimmten Erwerbsstatistik und Arbeitsstättenzählung](https://www.data.gv.at/katalog/dataset/80598a3d-4bc1-3fe0-b2c3-0febf834327d). [According to WKO](http://wko.at/statistik/eu/europa-beschaeftigungsstruktur.pdf) the Austrian workforce as of 2019 is distributed as follows:
+- 70.9% service industry
+- 25.4% production (industry)
+
+**Work facilities for Vienna** were taken from Churanek and Steinnocher (2017). Their work features a highly detailed mapping of workplaces to buildings instead relying on of district-wide averages.
 
 ### Calibration
+
+TODO update
 
 For calibration we used cadyts and data from ~180 car traffic counters spread over the whole simulation area.
 
@@ -63,22 +99,7 @@ i.e. excluding agents with a home location in Lower Austria.
 
 ## Highlights
 
-The model's highlights are **intermodal routing** and **different values of travel time for subpopulations**.
-
-### Intermodal Routing
-
-The MATSim Model Vienna is intermodal through usage of the *Ariadne* routing framework,
-i.e. **allows for park and ride or combining cycling with demand responsive transport on a single leg**.
-
-In the full model we follow the same approach as described by Hörl et al (2019),
-where the classic MATSim cycle of trial and error with random changes to plans
-is discarded as it would take too much time to fully explore all intermodal possibilities.
-This leads to much **faster convergence towards a state of equilibrium**.
-
-Instead of random changes to the agents' plans we use *Ariadne* to **only generate plausible intermodal plans**.
-To further increase the simulation time all plausible plans are pre-calculated and cached for the whole population.
-This cache can then be used for all simulation runs.
-
+The model's highlights are **different values of travel time for subpopulations**.
 
 ### Subpopulations & Value of Travel Time
 
@@ -89,24 +110,13 @@ The mode choice parameters are estimated for two (latent) classes by SP-off-RP s
 Depending on the socio-demographics of each agent, we yield the probability of him/her to be part of each of the two classes.
 Based on these probabilities, we split the population in ten supopulations (according to quantiles), and estimate the parameters for each subpopulation.
 
-This highlight is also available in the open access model (see the subpopulations in [config.xml](config.xml))!
-
-
-## Differences Between the Open Access Model and the Full Model
-
-While the **full model is intermodal** through usage of the *Ariadne* routing framework,
-the **open access model only uses MATSim car routing and teleportation of all other modes**.
-
-The open access model
-
-1. is more coarsely calibrated.
-2. tends to underestimate trip durations and distances by around 30% due to teleporting instead of actual route calculation all modes but car.
-
+See subpopulations and their `scoringParameters` in [config.xml](config.xml).
 
 ## Literature
 
-- Hörl, S., Balać, M., & Axhausen, K. W. (2019). *Pairing discrete mode choice models and agent-based transport simulation with MATSim*. In 2019 TRB Annual Meeting Online (pp. 19-02409).
+- Churanek, R. & Steinnocher, K. (2017). *Räumliche Modellierung der Tagesbevölkerung in Wien*. Proceedings of 22nd International Conference on Urban Planning, Regional Development and Information Society.
 - Greene, W. H., & Hensher, D. A. (2003). *A latent class model for discrete choice analysis: contrasts with mixed logit*. Transportation Research Part B: Methodological, 37(8), 681-698.
+- Hörl, S., Balać, M., & Axhausen, K. W. (2019). *Pairing discrete mode choice models and agent-based transport simulation with MATSim*. In 2019 TRB Annual Meeting Online (pp. 19-02409).
 
 ### Preferred Citation
 
