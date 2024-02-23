@@ -8,9 +8,9 @@ with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim*
 
 ## TODOs before release
 
-- [ ] finalize calibration
+- [x] finalize calibration
 - [ ] update calibration explanations
-- [ ] extract random population with 500 agents
+- [x] clean population (avoid ÖU data leakage)
 - [ ] zip normal population and output events (of last calibration iteration = baseline pop)
   - [ ] upload to nextcloud
 - [ ] update modal split numbers and plot
@@ -37,7 +37,7 @@ Run the simulation:
 1. Optionally change the population in the config:
    - Default is the full population (12.5% of the mobile population)
    - For a quick test you can use the small population containing 500 randomly selected agents of the full population
-2. Download [MATSim](https://matsim.org/downloads) 14 or newer
+2. Download [MATSim](https://matsim.org/downloads) (tested with version 16)
 3. Run the MATSim GUI
    - Select the configuration file
    - Set `Memory` to 4 GB for the full population (or 2 GB for the small population)
