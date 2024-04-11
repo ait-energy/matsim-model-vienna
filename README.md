@@ -8,8 +8,7 @@ with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim*
 
 ## TODOs before release
 
-- [x] finalize calibration
-- [ ] update calibration explanations
+- [x] update calibration explanations
 - [x] clean population (avoid ÖU data leakage)
 - [ ] zip normal population and output events (of last calibration iteration = baseline pop)
   - [ ] upload to nextcloud
@@ -18,10 +17,10 @@ with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim*
 - [ ] what are the highlights of the model? (cordons?)
 
 TODO document how we handled
-- [ ] through / destination / source traffic:
-  - [ ] for Austrian citizens: via cordon points
-  - [ ] for foreign citizens: Grundbelastung
-- [ ] commercial traffic (Grundbelastung X%)
+- [x] through / destination / source traffic:
+  - [x] for Austrian citizens: via cordon points
+  - [x] for foreign citizens: Grundbelastung
+- [x] commercial traffic (Grundbelastung X%)
 
 ## First Steps
 
@@ -52,16 +51,19 @@ Run the simulation:
 - **Simulation Area:** Vienna and surroundings (between 40 and 80km away)
   - area: 11,700 km²
   - total population: 3.05 million (2013-01), 3.275 million (2020-01)
-- **Network**: 375k links and 169k nodes extracted from [OpenStreetMap](https://www.openstreetmap.org) (2021) and OGD transit timetables (2022) with [pt2matsim](https://github.com/matsim-org/pt2matsim)
+- **Network**: 375k links and 169k nodes extracted from [OpenStreetMap](https://www.openstreetmap.org) (2021) and OGD transit timetables (VOR: Tuesday 2022-06-07, EVU: 2022-10-27) with [pt2matsim](https://github.com/matsim-org/pt2matsim)
 - **Facilities:** 654k locations extracted mainly from [OpenStreetMap](https://www.openstreetmap.org)
-- **Population synthesis**: based on the Austrian mobility survey *Österreich Unterwegs 2013/14* with [oeu_popsynth](https://gitlab-intern.ait.ac.at/energy/commons/matsim/oeu_popsynth), scaled up to population of 2020
+- **Population synthesis**: based on the Austrian mobility survey *Österreich Unterwegs 2013/14* with [ARUP PAM](https://github.com/arup-group/pam), scaled up to population of 2020
 - **Population**: 332k agents represent 12.5% of the mobile population older than 5 years.
   - Agents use the MATSim modes walk, bike, pt, car, ride.
-- **Routing**: SwissRailRaptor (not *Ariadne* as in the [2022 version](https://github.com/ait-energy/matsim-model-vienna/tree/2022))
-- **Mode choice model:** 10 subpopulations, based on Greene and Hensher (2003).
+  - Source, destination and through traffic: trips are trimmed at the border of the simulation area. Cordon entry and exit points are assigned to the appropriate links in the matching direction, which is especially important for cordon points on motrways. For public transit the exit and entry points are high-ranking train stations. All agents with at least one cordon trip are assigned to the special subpopulation "subpop_cordon_agents". This allows for separate handling in mode choice.
+  - Traffic by foreign citizens is not included (except for cargo traffic)
+- **Routing**: SwissRailRaptor (not Ariadne)
+- **Cargo traffic**: represented as ~10% reduction in `flowCapacityFactor` and `storageCapacityFactor` and a reduction of all count stations.
+- **Mode choice model:** 10 subpopulations, based on Greene and Hensher (2003), plus the additional cordon subpopulation.
 - **Calibration:** on modal split derived from synthesized population
-  - TODO update (also counts!)
 
+### Coverage Area
 
 ![Area covered by the MATSim Model Vienna](matsim_model_vienna_area.jpg)
 
@@ -85,16 +87,31 @@ and [geostat population density](https://ec.europa.eu/eurostat/web/gisco/geodata
 
 **Work facilities for Vienna** were taken from Churanek and Steinnocher (2017). Their work features a highly detailed mapping of workplaces to buildings instead relying on of district-wide averages.
 
-### Calibration
+### Calibration & Modal Split
 
-TODO update
+A population with four plans per agent (featuring different randomly chosen locations for each plan) serves as base and allows the calibration to implicitly choose the most fitting facility locations.
+The model is calibrated to the modal split derived from synthesized population.
 
-For calibration we used cadyts and data from ~180 car traffic counters spread over the whole simulation area.
+Car traffic counts from ~180 automatic counting stations spread over the whole simulation area from the years 2015/2016 are then used with cadyts which runs for 250 (of the total 750) iterations.
+The `TimeAllocationMutator` is used with a `mutationRange` of 1h for the first 25 iterations only. The used count data are:
+  - hourly counts for Vienna (cars + trucks): Straßenverkehrszählung 2015
+  - hourly counts for motorways (only cars): ASFINAG 2016
+
+During calibration SwissRailRaptor was set to `<param name="intermodalAccessEgressModeSelection" value="RandomSelectOneModePerRoutingRequestAndDirection"/>` with foot and bike as intermodal access / egress modes
 
 This plot shows the modal split for all inhabitants of the City of Vienna,
 i.e. excluding agents with a home location in Lower Austria.
 
 ![Modal split of the calibrated models](modal_split.svg)
+
+Comparison of modal split for the whole simulation region as extracted from (scaled up) ÖU2013/14 vs. baselines.
+(Note, that there was no re-calibration after the fixes to the population mentioned above)
+
+|                    | walk   | bike  | pt     | ride  | car    |
+|--------------------|--------|-------|--------|-------|--------|
+| ÖU2013/14          | 20.11% | 4.97% | 29.19% | 9.49% | 36.24% |
+| DiscreteModeChoice | 21.49% | 1.34% | 31.95% | 8.95% | 36.27% |
+| SubtourModeChoice  | 21.09% | 2.47% | 30.44% | 7.09% | 38.90% |
 
 
 ## Highlights
@@ -106,17 +123,23 @@ The model's highlights are **different values of travel time for subpopulations*
 The model features **different values of travel time** for the simulated agents which are represented in the parameters of the Charypar-Nagel function.
 These do not depend - as mostly done - on the home location of the agent but on **socio-demographic characteristics assigned to the agents**.
 
-The mode choice parameters are estimated for two (latent) classes by SP-off-RP surveys together with probabilities indicating that persons with particular characteristics are part of each class (Greene and Hensher, 2003).
-Depending on the socio-demographics of each agent, we yield the probability of him/her to be part of each of the two classes.
-Based on these probabilities, we split the population in ten supopulations (according to quantiles), and estimate the parameters for each subpopulation.
+The mode choice model that is part of the joint estimation is a more parsimonious version of the model presented in Schmid et al. (2019), and uses actual and hypothetical trip data.
+The time use and expenditure equations are estimated in a similar way as in Hössinger et al. (2020) and Jokubauskaité et al. (2019).
+We estimate two classes of coefficients for all parameters, since not much explanatory power is gained by introducing more classes.
+The class membership equation then determines for each individual the class membership probability, i.e. how much weight each class of coefficients has for a specific person.
+The class membership probability in turn is a linear function of several binary socioeconomic variables sex, age below 35, age above 55, income higher than median, education high-school or above, living in urban area, kids living in the household, single household and full time work with at least 38 hours a week.
+The distribution of the class membership probability is then used to define **10 equally large subpopulations**, based on Greene, W. H., & Hensher, D. A. (2003).
 
 See subpopulations and their `scoringParameters` in [config.xml](config.xml).
 
 ## Literature
 
-- Churanek, R. & Steinnocher, K. (2017). *Räumliche Modellierung der Tagesbevölkerung in Wien*. Proceedings of 22nd International Conference on Urban Planning, Regional Development and Information Society.
-- Greene, W. H., & Hensher, D. A. (2003). *A latent class model for discrete choice analysis: contrasts with mixed logit*. Transportation Research Part B: Methodological, 37(8), 681-698.
-- Hörl, S., Balać, M., & Axhausen, K. W. (2019). *Pairing discrete mode choice models and agent-based transport simulation with MATSim*. In 2019 TRB Annual Meeting Online (pp. 19-02409).
+- Churanek, R. & Steinnocher, K. (2017). Räumliche Modellierung der Tagesbevölkerung in Wien. Proceedings of 22nd International Conference on Urban Planning, Regional Development and Information Society.
+- Greene, W. H., & Hensher, D. A. (2003). A latent class model for discrete choice analysis: contrasts with mixed logit. Transportation Research Part B: Methodological, 37(8), 681-698.
+- Hössinger, R., F. Aschauer, S. Jara-Díaz, S. Jokubauskaite, B. Schmid, S. Peer, K. Axhausen, and R. Gerike (2020). A joint time-assignment and expenditure-allocation model: value of leisure and value of time assigned to travel for specific population segments. Transportation, Vol. 47, No. 3, 2020, pp. 1439–1475.
+- Schmid, B., S. Jokubauskaite, F. Aschauer, S. Peer, R. Hössinger, R. Gerike, S. R. Jara Diaz, and K. Axhausen (2019). A pooled RP/SP mode, route and destination choice model to investigate mode and user-type effects in the value of travel time savings. Transportation Research Part A: Policy and Practice, Vol. 124, 2019, pp. 262–294.17
+- Jokubauskaité, S., R. Hössinger, F. Aschauer, R. Gerike, S. Jara-Díaz, S. Peer, B. Schmid, K. Axhausen, and F. Leisch (2019). Advanced continuous-discrete model for joint time-use expenditure and mode choice estimation. Transportation Research Part B: Methodological, Vol. 129, 2019, pp. 397–421
+
 
 ### Preferred Citation
 
