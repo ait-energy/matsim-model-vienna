@@ -6,43 +6,28 @@ with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim*
 > **Note:** the 2022 version (covering a smaller area and using proprietary intermodal routing with Ariadne)
 > is still available: [MATSim Model Vienna 2022](https://github.com/ait-energy/matsim-model-vienna/tree/2022)
 
-## TODOs before release
-
-- [x] update calibration explanations
-- [x] clean population (avoid ÖU data leakage)
-- [ ] zip normal population and output events (of last calibration iteration = baseline pop)
-  - [ ] upload to nextcloud
-- [ ] update modal split numbers and plot
-- [ ] do we have a new main citation for our model? (that does not have the ariadne/intermodal stuff as main topic)
+==**TODOs before final release**==
+- [x] update modal split numbers and plot
+- [x] update all model files
+- [ ] new main citation for our model? (that does not have the ariadne/intermodal stuff as main topic)
 - [ ] what are the highlights of the model? (cordons?)
+- [ ] provide simulation results as zip on nextcloud? (including output events of last calibration iteration)
 
-TODO document how we handled
-- [x] through / destination / source traffic:
-  - [x] for Austrian citizens: via cordon points
-  - [x] for foreign citizens: Grundbelastung
-- [x] commercial traffic (Grundbelastung X%)
 
 ## First Steps
 
-Download the model:
+To get the model simply download or clone this repository.
 
-1. Download or clone this repository
-2. Download files (*password: matsim12*) too large for hosting on GitHub and put them it into the folder created in the previous step
-   - [full population](https://nextcloud.ait.ac.at/TODO)
-   - optional: [output events of both the full and the open access model](https://nextcloud.ait.ac.at/TODO) for further visualization / analysis
+Two configs using different mode innovation modules are included:
+- one with `SubtourModeChoice` (can simply be run with the [MATSim GUI](https://matsim.org/downloads/#gui)
+- one with `DiscreteModeChoice` that requires a custom runner
 
-Run the simulation:
+The model was developed using MATSim 16 but should also work with older (and newer) versions.
 
-1. Optionally change the population in the config:
-   - Default is the full population (12.5% of the mobile population)
-   - For a quick test you can use the small population containing 500 randomly selected agents of the full population
-2. Download [MATSim](https://matsim.org/downloads) (tested with version 16)
-3. Run the MATSim GUI
-   - Select the configuration file
-   - Set `Memory` to 4 GB for the full population (or 2 GB for the small population)
-   - Start the simulation
+Results of simulation runs are also directly available [here](https://nextcloud.ait.ac.at/TODO).
 
-> Note: 500 agents is also the maximum number of agents to visualize the results in [Simunto Via](https://simunto.com/via/) with a free license.
+> Note: Use the population with 500 randomly chosen agents and reduce the number of iterations for quick tests.
+> 500 is also the maximum number of agents to visualize the results in [Simunto Via](https://simunto.com/via/) with a free license.
 
 
 ## The Model in a Nutshell
@@ -58,8 +43,8 @@ Run the simulation:
   - Agents use the MATSim modes walk, bike, pt, car, ride.
   - Source, destination and through traffic: trips are trimmed at the border of the simulation area. Cordon entry and exit points are assigned to the appropriate links in the matching direction, which is especially important for cordon points on motrways. For public transit the exit and entry points are high-ranking train stations. All agents with at least one cordon trip are assigned to the special subpopulation "subpop_cordon_agents". This allows for separate handling in mode choice.
   - Traffic by foreign citizens is not included (except for cargo traffic)
-- **Routing**: SwissRailRaptor (not Ariadne)
 - **Cargo traffic**: represented as ~10% reduction in `flowCapacityFactor` and `storageCapacityFactor` and a reduction of all count stations.
+- **Routing**: SwissRailRaptor (not Ariadne)
 - **Mode choice model:** 10 subpopulations, based on Greene and Hensher (2003), plus the additional cordon subpopulation.
 - **Calibration:** on modal split derived from synthesized population
 
@@ -92,26 +77,16 @@ and [geostat population density](https://ec.europa.eu/eurostat/web/gisco/geodata
 A population with four plans per agent (featuring different randomly chosen locations for each plan) serves as base and allows the calibration to implicitly choose the most fitting facility locations.
 The model is calibrated to the modal split derived from synthesized population.
 
-Car traffic counts from ~180 automatic counting stations spread over the whole simulation area from the years 2015/2016 are then used with cadyts which runs for 250 (of the total 750) iterations.
+Car traffic counts from ~180 automatic counting stations spread over the whole simulation area from the years 2015/2016 are then used with [Cadyts](https://people.kth.se/~gunnarfl/cadyts.html) which runs for 250 (of the total 750) iterations.
 The `TimeAllocationMutator` is used with a `mutationRange` of 1h for the first 25 iterations only. The used count data are:
   - hourly counts for Vienna (cars + trucks): Straßenverkehrszählung 2015
   - hourly counts for motorways (only cars): ASFINAG 2016
 
 During calibration SwissRailRaptor was set to `<param name="intermodalAccessEgressModeSelection" value="RandomSelectOneModePerRoutingRequestAndDirection"/>` with foot and bike as intermodal access / egress modes
 
-This plot shows the modal split for all inhabitants of the City of Vienna,
-i.e. excluding agents with a home location in Lower Austria.
+This plot shows modal splits for the whole simulation region:
 
-![Modal split of the calibrated models](modal_split.svg)
-
-Comparison of modal split for the whole simulation region as extracted from (scaled up) ÖU2013/14 vs. baselines.
-(Note, that there was no re-calibration after the fixes to the population mentioned above)
-
-|                    | walk   | bike  | pt     | ride  | car    |
-|--------------------|--------|-------|--------|-------|--------|
-| ÖU2013/14          | 20.11% | 4.97% | 29.19% | 9.49% | 36.24% |
-| DiscreteModeChoice | 21.49% | 1.34% | 31.95% | 8.95% | 36.27% |
-| SubtourModeChoice  | 21.09% | 2.47% | 30.44% | 7.09% | 38.90% |
+![Modal split of the calibrated model](modal_split.svg)
 
 
 ## Highlights
@@ -130,7 +105,7 @@ The class membership equation then determines for each individual the class memb
 The class membership probability in turn is a linear function of several binary socioeconomic variables sex, age below 35, age above 55, income higher than median, education high-school or above, living in urban area, kids living in the household, single household and full time work with at least 38 hours a week.
 The distribution of the class membership probability is then used to define **10 equally large subpopulations**, based on Greene, W. H., & Hensher, D. A. (2003).
 
-See subpopulations and their `scoringParameters` in [config.xml](config.xml).
+See subpopulations and their `scoringParameters` in [config-baseline-discreteModeChoice.xml](config-baseline-discreteModeChoice.xml).
 
 ## Literature
 
@@ -139,7 +114,6 @@ See subpopulations and their `scoringParameters` in [config.xml](config.xml).
 - Hössinger, R., F. Aschauer, S. Jara-Díaz, S. Jokubauskaite, B. Schmid, S. Peer, K. Axhausen, and R. Gerike (2020). A joint time-assignment and expenditure-allocation model: value of leisure and value of time assigned to travel for specific population segments. Transportation, Vol. 47, No. 3, 2020, pp. 1439–1475.
 - Schmid, B., S. Jokubauskaite, F. Aschauer, S. Peer, R. Hössinger, R. Gerike, S. R. Jara Diaz, and K. Axhausen (2019). A pooled RP/SP mode, route and destination choice model to investigate mode and user-type effects in the value of travel time savings. Transportation Research Part A: Policy and Practice, Vol. 124, 2019, pp. 262–294.17
 - Jokubauskaité, S., R. Hössinger, F. Aschauer, R. Gerike, S. Jara-Díaz, S. Peer, B. Schmid, K. Axhausen, and F. Leisch (2019). Advanced continuous-discrete model for joint time-use expenditure and mode choice estimation. Transportation Research Part B: Methodological, Vol. 129, 2019, pp. 397–421
-
 
 ### Preferred Citation
 
