@@ -38,7 +38,7 @@ Results of simulation runs are also directly available [here](https://nextcloud.
   - total population: 3.05 million (2013-01), 3.275 million (2020-01)
 - **Network**: 375k links and 169k nodes extracted from [OpenStreetMap](https://www.openstreetmap.org) (2021) and OGD transit timetables (VOR: Tuesday 2022-06-07, EVU: 2022-10-27) with [pt2matsim](https://github.com/matsim-org/pt2matsim)
 - **Facilities:** 654k locations extracted mainly from [OpenStreetMap](https://www.openstreetmap.org)
-- **Population synthesis**: based on the Austrian mobility survey *Österreich Unterwegs 2013/14* with [ARUP PAM](https://github.com/arup-group/pam), scaled up to population of 2020
+- **Population synthesis**: based on the Austrian mobility survey *Österreich Unterwegs 2013/14* by Tomschy et al. (2016) with [ARUP PAM](https://github.com/arup-group/pam), scaled up to population of 2020
 - **Population**: 332k agents represent 12.5% of the mobile population older than 5 years.
   - Agents use the MATSim modes walk, bike, pt, car, ride.
   - Source, destination and through traffic: trips are trimmed at the border of the simulation area. Cordon entry and exit points are assigned to the appropriate links in the matching direction, which is especially important for cordon points on motrways. For public transit the exit and entry points are high-ranking train stations. All agents with at least one cordon trip are assigned to the special subpopulation "subpop_cordon_agents". This allows for separate handling in mode choice.
@@ -95,7 +95,7 @@ The model's highlights are **different values of travel time for subpopulations*
 
 ### Subpopulations & Value of Travel Time
 
-The model features **different values of travel time** for the simulated agents which are represented in the parameters of the Charypar-Nagel function as described in Horni et al (2016).
+The model features **different values of travel time** for the simulated agents which are represented in the parameters of the Charypar-Nagel function as described in Horni et al. (2016).
 These do not depend - as mostly done - on the home location of the agent but on **socio-demographic characteristics assigned to the agents**.
 
 The mode choice model that is part of the joint estimation is a more parsimonious version of the model presented in Schmid et al. (2019), and uses actual and hypothetical trip data.
@@ -103,28 +103,29 @@ The time use and expenditure equations are estimated in a similar way as in Hös
 We estimate two classes of coefficients for all parameters, since not much explanatory power is gained by introducing more classes.
 The class membership equation then determines for each individual the class membership probability, i.e. how much weight each class of coefficients has for a specific person.
 The class membership probability in turn is a linear function of several binary socioeconomic variables sex, age below 35, age above 55, income higher than median, education high-school or above, living in urban area, kids living in the household, single household and full time work with at least 38 hours a week.
-The distribution of the class membership probability is then used to define **10 equally large subpopulations**, based on Greene, W. H., & Hensher, D. A. (2003).
+The distribution of the class membership probability is then used to define **10 equally large subpopulations**, based on Greene and Hensher (2003).
 
 See subpopulations and their `scoringParameters` in [config-baseline-discreteModeChoice.xml](config-baseline-discreteModeChoice.xml).
 
 ## Literature
 
-- Churanek, R. & Steinnocher, K. (2017). Räumliche Modellierung der Tagesbevölkerung in Wien. Proceedings of 22nd International Conference on Urban Planning, Regional Development and Information Society.
-- Greene, W. H., & Hensher, D. A. (2003). A latent class model for discrete choice analysis: contrasts with mixed logit. Transportation Research Part B: Methodological, 37(8), 681-698.
+- Churanek, R. and Steinnocher, K. (2017). Räumliche Modellierung der Tagesbevölkerung in Wien. Proceedings of 22nd International Conference on Urban Planning, Regional Development and Information Society.
+- Greene, W. H. and Hensher, D. A. (2003). A latent class model for discrete choice analysis: contrasts with mixed logit. Transportation Research Part B: Methodological, 37(8), 681-698.
 - Horni, A., Nagel, K. and Axhausen, K.W. (2016). The Multi-Agent Transport Simulation MATSim. London: Ubiquity Press. DOI: http://dx.doi.org/10.5334/baw. License: CC-BY 4.0
-- Hössinger, R., F. Aschauer, S. Jara-Díaz, S. Jokubauskaite, B. Schmid, S. Peer, K. Axhausen, and R. Gerike (2020). A joint time-assignment and expenditure-allocation model: value of leisure and value of time assigned to travel for specific population segments. Transportation, Vol. 47, No. 3, 2020, pp. 1439–1475.
-- Schmid, B., S. Jokubauskaite, F. Aschauer, S. Peer, R. Hössinger, R. Gerike, S. R. Jara Diaz, and K. Axhausen (2019). A pooled RP/SP mode, route and destination choice model to investigate mode and user-type effects in the value of travel time savings. Transportation Research Part A: Policy and Practice, Vol. 124, 2019, pp. 262–294.17
-- Jokubauskaité, S., R. Hössinger, F. Aschauer, R. Gerike, S. Jara-Díaz, S. Peer, B. Schmid, K. Axhausen, and F. Leisch (2019). Advanced continuous-discrete model for joint time-use expenditure and mode choice estimation. Transportation Research Part B: Methodological, Vol. 129, 2019, pp. 397–421
+- Hössinger, R., F. Aschauer, S. Jara-Díaz, S. Jokubauskaite, B. Schmid, S. Peer, K. Axhausen and R. Gerike (2020). A joint time-assignment and expenditure-allocation model: value of leisure and value of time assigned to travel for specific population segments. Transportation, Vol. 47, No. 3, 2020, pp. 1439–1475.
+- Jokubauskaité, S., R. Hössinger, F. Aschauer, R. Gerike, S. Jara-Díaz, S. Peer, B. Schmid, K. Axhausen and F. Leisch (2019). Advanced continuous-discrete model for joint time-use expenditure and mode choice estimation. Transportation Research Part B: Methodological, Vol. 129, 2019, pp. 397–421
+- Schmid, B., S. Jokubauskaite, F. Aschauer, S. Peer, R. Hössinger, R. Gerike, S. R. Jara Diaz and K. Axhausen (2019). A pooled RP/SP mode, route and destination choice model to investigate mode and user-type effects in the value of travel time savings. Transportation Research Part A: Policy and Practice, Vol. 124, 2019, pp. 262–294.17
+- Tomschy,  R.,  Herry,  M.,  Sammer,  G.,  Klementschitz,  R.,  Riegler,  S.,  Follmer,  R.,  Gruschwitz,  D.,  Josef,F., Gensasz, S., Kirnbauer, R. and Spiegel, T. (2016). Österreich  unterwegs  2013–2014:  Ergebnisbericht zur österreichweiten  Mobilitätserhebung
 
 ### Preferred Citation
 
 If you use the MATSim Model Vienna and write a scientific paper about it, please cite the following paper as a reference:
 
-- Müller, J., Straub, M., Richter, G., Rudloff, C. (2022). *Integration of Different Mobility Behaviors and Intermodal Trips in MATSim*. Sustainability. 2022; 14(1):428. https://doi.org/10.3390/su14010428
+- Müller, J., Straub, M., Richter, G., and Rudloff, C. (2022). *Integration of Different Mobility Behaviors and Intermodal Trips in MATSim*. Sustainability. 2022; 14(1):428. https://doi.org/10.3390/su14010428
 
 Further reading:
 
-- Müller, J., Straub, M., Naqvi, A.,  Richter, G., Peer, S., & Rudloff, C. (2021). *MATSim Model Vienna: Analyzing the Socioeconomic Impacts for Different Fleet Sizes and Pricing Schemes of Shared Autonomous Electric Vehicles*. Proceedings of the 100th Annual Meeting of the Transportation Research Board. Available on [ResearchGate](https://www.researchgate.net/publication/349212535_MATSim_Model_Vienna_Analyzing_the_Socioeconomic_Impacts_for_Different_Fleet_Sizes_and_Pricing_Schemes_of_Shared_Autonomous_Electric_Vehicles).
+- Müller, J., Straub, M., Naqvi, A.,  Richter, G., Peer, S., and Rudloff, C. (2021). *MATSim Model Vienna: Analyzing the Socioeconomic Impacts for Different Fleet Sizes and Pricing Schemes of Shared Autonomous Electric Vehicles*. Proceedings of the 100th Annual Meeting of the Transportation Research Board. Available on [ResearchGate](https://www.researchgate.net/publication/349212535_MATSim_Model_Vienna_Analyzing_the_Socioeconomic_Impacts_for_Different_Fleet_Sizes_and_Pricing_Schemes_of_Shared_Autonomous_Electric_Vehicles).
 
 
 ## License
