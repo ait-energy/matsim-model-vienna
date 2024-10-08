@@ -19,7 +19,7 @@ with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim*
 To get the model simply download or clone this repository.
 
 Two configs using different mode innovation modules are included:
-- one with `SubtourModeChoice` (can simply be run with the [MATSim GUI](https://matsim.org/downloads/#gui)
+- one with `SubtourModeChoice` (can simply be run with the [MATSim GUI](https://matsim.org/downloads/#gui))
 - one with `DiscreteModeChoice` that requires a custom runner
 
 The model was developed using MATSim 16 but should also work with older (and newer) versions.
@@ -95,7 +95,7 @@ The model's highlights are **different values of travel time for subpopulations*
 
 ### Subpopulations & Value of Travel Time
 
-The model features **different values of travel time** for the simulated agents which are represented in the parameters of the Charypar-Nagel function.
+The model features **different values of travel time** for the simulated agents which are represented in the parameters of the Charypar-Nagel function as described in Horni et al (2016).
 These do not depend - as mostly done - on the home location of the agent but on **socio-demographic characteristics assigned to the agents**.
 
 The mode choice model that is part of the joint estimation is a more parsimonious version of the model presented in Schmid et al. (2019), and uses actual and hypothetical trip data.
@@ -111,6 +111,7 @@ See subpopulations and their `scoringParameters` in [config-baseline-discreteMod
 
 - Churanek, R. & Steinnocher, K. (2017). Räumliche Modellierung der Tagesbevölkerung in Wien. Proceedings of 22nd International Conference on Urban Planning, Regional Development and Information Society.
 - Greene, W. H., & Hensher, D. A. (2003). A latent class model for discrete choice analysis: contrasts with mixed logit. Transportation Research Part B: Methodological, 37(8), 681-698.
+- Horni, A., Nagel, K. and Axhausen, K.W. (2016). The Multi-Agent Transport Simulation MATSim. London: Ubiquity Press. DOI: http://dx.doi.org/10.5334/baw. License: CC-BY 4.0
 - Hössinger, R., F. Aschauer, S. Jara-Díaz, S. Jokubauskaite, B. Schmid, S. Peer, K. Axhausen, and R. Gerike (2020). A joint time-assignment and expenditure-allocation model: value of leisure and value of time assigned to travel for specific population segments. Transportation, Vol. 47, No. 3, 2020, pp. 1439–1475.
 - Schmid, B., S. Jokubauskaite, F. Aschauer, S. Peer, R. Hössinger, R. Gerike, S. R. Jara Diaz, and K. Axhausen (2019). A pooled RP/SP mode, route and destination choice model to investigate mode and user-type effects in the value of travel time savings. Transportation Research Part A: Policy and Practice, Vol. 124, 2019, pp. 262–294.17
 - Jokubauskaité, S., R. Hössinger, F. Aschauer, R. Gerike, S. Jara-Díaz, S. Peer, B. Schmid, K. Axhausen, and F. Leisch (2019). Advanced continuous-discrete model for joint time-use expenditure and mode choice estimation. Transportation Research Part B: Methodological, Vol. 129, 2019, pp. 397–421
