@@ -1,33 +1,21 @@
-# MATSim Model Vienna: Open Access
+# MATSim Model Vienna 2023.2
 
-This repository contains data for a traffic simulation for the city and agglomeration of Vienna
+This repository contains data for a traffic simulation model for the city and agglomeration of Vienna (Austria)
 with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim**ulation.
 
-> **Note:** the 2022 version (covering a smaller area and using proprietary intermodal routing with Ariadne)
+> [!note] The 2022 version (covering a smaller area and using proprietary intermodal routing with Ariadne)
 > is still available: [MATSim Model Vienna 2022](https://github.com/ait-energy/matsim-model-vienna/tree/2022)
-
-==**TODOs before final release**==
-- [x] update modal split numbers and plot
-- [x] update all model files
-- [ ] new main citation for our model? (that does not have the ariadne/intermodal stuff as main topic)
-- [ ] what are the highlights of the model? (cordons?)
-- [ ] provide simulation results as zip on nextcloud? (including output events of last calibration iteration)
 
 
 ## First Steps
 
 To get the model simply download or clone this repository.
 
-Two configs using different mode innovation modules are included:
-- one with `SubtourModeChoice` (can simply be run with the [MATSim GUI](https://matsim.org/downloads/#gui))
-- one with `DiscreteModeChoice` that requires a custom runner
+Configs for two widely used *mode innovation* variants are included:
+1. `SubtourModeChoice`: can simply be run with the [MATSim GUI](https://matsim.org/downloads/#gui)
+2. `DiscreteModeChoice`: requires a custom runner
 
 The model was developed using MATSim 16 but should also work with older (and newer) versions.
-
-Results of simulation runs are also directly available [here](https://nextcloud.ait.ac.at/TODO).
-
-> Note: Use the population with 500 randomly chosen agents and reduce the number of iterations for quick tests.
-> 500 is also the maximum number of agents to visualize the results in [Simunto Via](https://simunto.com/via/) with a free license.
 
 
 ## The Model in a Nutshell
@@ -41,11 +29,11 @@ Results of simulation runs are also directly available [here](https://nextcloud.
 - **Population synthesis**: based on the Austrian mobility survey *Österreich Unterwegs 2013/14* by Tomschy et al. (2016) with [ARUP PAM](https://github.com/arup-group/pam), scaled up to population of 2020
 - **Population**: 332k agents represent 12.5% of the mobile population older than 5 years.
   - Agents use the MATSim modes walk, bike, pt, car, ride.
-  - Source, destination and through traffic: trips are trimmed at the border of the simulation area. Cordon entry and exit points are assigned to the appropriate links in the matching direction, which is especially important for cordon points on motrways. For public transit the exit and entry points are high-ranking train stations. All agents with at least one cordon trip are assigned to the special subpopulation "subpop_cordon_agents". This allows for separate handling in mode choice.
+  - Trips include inside, source, destination and through traffic (see cordon traffic)
   - Traffic by foreign citizens is not included (except for cargo traffic)
 - **Cargo traffic**: represented as ~10% reduction in `flowCapacityFactor` and `storageCapacityFactor` and a reduction of all count stations.
 - **Routing**: SwissRailRaptor (not Ariadne)
-- **Mode choice model:** 10 subpopulations, based on Greene and Hensher (2003), plus the additional cordon subpopulation.
+- **Mode choice model:** 10 subpopulations, based on Greene and Hensher (2003), plus an additional subpopulation for cordon trips.
 - **Calibration:** on modal split derived from synthesized population
 
 ### Coverage Area
@@ -79,8 +67,8 @@ The model is calibrated to the modal split derived from synthesized population.
 
 Car traffic counts from ~180 automatic counting stations spread over the whole simulation area from the years 2015/2016 are then used with [Cadyts](https://people.kth.se/~gunnarfl/cadyts.html) which runs for 250 (of the total 750) iterations.
 The `TimeAllocationMutator` is used with a `mutationRange` of 1h for the first 25 iterations only. The used count data are:
-  - hourly counts for Vienna (cars + trucks): Straßenverkehrszählung 2015
-  - hourly counts for motorways (only cars): ASFINAG 2016
+- hourly counts for Vienna for 2015 (cars + trucks): [Straßenverkehrszählung Wien 2015](https://www.digital.wienbibliothek.at/urn/urn:nbn:at:AT-WBR-879281)
+- hourly counts for motorways for 2016 (only cars) provided by [ASFINAG](https://www.asfinag.at/verkehr-sicherheit/verkehrszahlung/)
 
 During calibration SwissRailRaptor was set to `<param name="intermodalAccessEgressModeSelection" value="RandomSelectOneModePerRoutingRequestAndDirection"/>` with foot and bike as intermodal access / egress modes
 
@@ -92,6 +80,12 @@ This plot shows modal splits for the whole simulation region:
 ## Highlights
 
 The model's highlights are **different values of travel time for subpopulations**.
+
+### Cordon Traffic
+
+Agents' trips don't solely consist of trips within the simulation area (inside traffic) but include **trips starting and/or ending outside** (source, destination and through traffic).
+
+This is achieved during population synthesis as follows: trips are trimmed at the border of the simulation area. Cordon entry and exit points are assigned to the appropriate network links in the matching direction, which is especially important for cordon points on motorways. For public transit the exit and entry points are high-ranking train stations. All agents with at least one cordon trip are assigned to the special subpopulation `subpop_cordon_agents`. This allows for separate handling in mode choice.
 
 ### Subpopulations & Value of Travel Time
 
@@ -107,6 +101,7 @@ The distribution of the class membership probability is then used to define **10
 
 See subpopulations and their `scoringParameters` in [config-baseline-discreteModeChoice.xml](config-baseline-discreteModeChoice.xml).
 
+
 ## Literature
 
 - Churanek, R. and Steinnocher, K. (2017). Räumliche Modellierung der Tagesbevölkerung in Wien. Proceedings of 22nd International Conference on Urban Planning, Regional Development and Information Society.
@@ -115,17 +110,17 @@ See subpopulations and their `scoringParameters` in [config-baseline-discreteMod
 - Hössinger, R., F. Aschauer, S. Jara-Díaz, S. Jokubauskaite, B. Schmid, S. Peer, K. Axhausen and R. Gerike (2020). A joint time-assignment and expenditure-allocation model: value of leisure and value of time assigned to travel for specific population segments. Transportation, Vol. 47, No. 3, 2020, pp. 1439–1475.
 - Jokubauskaité, S., R. Hössinger, F. Aschauer, R. Gerike, S. Jara-Díaz, S. Peer, B. Schmid, K. Axhausen and F. Leisch (2019). Advanced continuous-discrete model for joint time-use expenditure and mode choice estimation. Transportation Research Part B: Methodological, Vol. 129, 2019, pp. 397–421
 - Schmid, B., S. Jokubauskaite, F. Aschauer, S. Peer, R. Hössinger, R. Gerike, S. R. Jara Diaz and K. Axhausen (2019). A pooled RP/SP mode, route and destination choice model to investigate mode and user-type effects in the value of travel time savings. Transportation Research Part A: Policy and Practice, Vol. 124, 2019, pp. 262–294.17
-- Tomschy,  R.,  Herry,  M.,  Sammer,  G.,  Klementschitz,  R.,  Riegler,  S.,  Follmer,  R.,  Gruschwitz,  D.,  Josef,F., Gensasz, S., Kirnbauer, R. and Spiegel, T. (2016). Österreich  unterwegs  2013–2014:  Ergebnisbericht zur österreichweiten  Mobilitätserhebung
+- Tomschy,  R.,  Herry,  M.,  Sammer,  G.,  Klementschitz,  R.,  Riegler,  S.,  Follmer,  R.,  Gruschwitz,  D.,  Josef, F., Gensasz, S., Kirnbauer, R. and Spiegel, T. (2016). Österreich  unterwegs  2013–2014:  Ergebnisbericht zur österreichweiten  Mobilitätserhebung
 
 ### Preferred Citation
 
-If you use the MATSim Model Vienna and write a scientific paper about it, please cite the following paper as a reference:
+If you use the MATSim Model Vienna and write a scientific paper about it, please reference it as
+
+- MATSim Model Vienna 2023.2, © AIT Austrian Institute of Technology GmbH, 2023, licensed CC BY-NC 4.0
+
+and/or cite the following paper as a reference:
 
 - Müller, J., Straub, M., Richter, G., and Rudloff, C. (2022). *Integration of Different Mobility Behaviors and Intermodal Trips in MATSim*. Sustainability. 2022; 14(1):428. https://doi.org/10.3390/su14010428
-
-Further reading:
-
-- Müller, J., Straub, M., Naqvi, A.,  Richter, G., Peer, S., and Rudloff, C. (2021). *MATSim Model Vienna: Analyzing the Socioeconomic Impacts for Different Fleet Sizes and Pricing Schemes of Shared Autonomous Electric Vehicles*. Proceedings of the 100th Annual Meeting of the Transportation Research Board. Available on [ResearchGate](https://www.researchgate.net/publication/349212535_MATSim_Model_Vienna_Analyzing_the_Socioeconomic_Impacts_for_Different_Fleet_Sizes_and_Pricing_Schemes_of_Shared_Autonomous_Electric_Vehicles).
 
 
 ## License
@@ -136,5 +131,5 @@ You may use it for all non-commercial activities, and must give appropriate cred
 
 ## Contact
 
-If you have any questions, remarks, or even collaboration ideas, please get in touch:
+If you have any questions, remarks, or collaboration ideas, please get in touch:
 either via GitHub or via email to `markus.straub` or `johannes.mueller` (both ending on `ait.ac.at`).
