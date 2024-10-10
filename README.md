@@ -3,7 +3,8 @@
 This repository contains data for a traffic simulation model for the city and agglomeration of Vienna (Austria)
 with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim**ulation.
 
-> [!note] The 2022 version (covering a smaller area and using proprietary intermodal routing with Ariadne)
+> [!NOTE]
+> The 2022 version (covering a smaller area and using proprietary intermodal routing with Ariadne)
 > is still available: [MATSim Model Vienna 2022](https://github.com/ait-energy/matsim-model-vienna/tree/2022)
 
 
