@@ -3,7 +3,7 @@
 This repository contains data for a traffic simulation model for the city and agglomeration of Vienna (Austria)
 with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim**ulation.
 
-> [!NOTE]
+> [!TIP]
 > The 2022 version (covering a smaller area and using proprietary intermodal routing with Ariadne)
 > is still available: [MATSim Model Vienna 2022](https://github.com/ait-energy/matsim-model-vienna/tree/2022)
 
@@ -21,7 +21,7 @@ The model was developed using MATSim 16 but should also work with older (and new
 
 ## The Model in a Nutshell
 
-- Aims to represent traffic in 2019 just before the COVID pandemic
+- Aims to represent traffic *before* the COVID pandemic (~2020)
 - **Simulation Area:** Vienna and surroundings (between 40 and 80km away)
   - area: 11,700 km²
   - total population: 3.05 million (2013-01), 3.275 million (2020-01)
@@ -36,6 +36,11 @@ The model was developed using MATSim 16 but should also work with older (and new
 - **Routing**: SwissRailRaptor (not Ariadne)
 - **Mode choice model:** 10 subpopulations, based on Greene and Hensher (2003), plus an additional subpopulation for cordon trips.
 - **Calibration:** on modal split derived from synthesized population
+
+> [!NOTE]
+> We tried to use data from 2020 if possible, but often this was not (easily) possible.
+> However, we ensured that used data is *comparable* to the situation in 2020,
+> e.g. population was scaled up, road and transit system did not change much in two years, etc.
 
 ### Coverage Area
 
