@@ -4,8 +4,9 @@ This repository contains data for a traffic simulation model for the city and ag
 with [MATSim](https://matsim.org) - the **M**ulti-**A**gent **T**ransport **Sim**ulation.
 
 > [!TIP]
-> The 2022 version (covering a smaller area and using proprietary intermodal routing with Ariadne)
-> is still available: [MATSim Model Vienna 2022](https://github.com/ait-energy/matsim-model-vienna/tree/2022)
+> [MATSim Model Vienna 2022](https://github.com/ait-energy/matsim-model-vienna/tree/2022)
+> covering a smaller area and using proprietary intermodal routing with Ariadne
+> is still available
 
 
 ## First Steps
@@ -38,7 +39,7 @@ The model was developed using MATSim 16 but should also work with older (and new
 - **Calibration:** on modal split derived from synthesized population
 
 > [!NOTE]
-> We tried to use data from 2020 if possible, but often this was not (easily) possible.
+> We tried to use data from 2020, but often this was not possible.
 > However, we ensured that used data is *comparable* to the situation in 2020,
 > e.g. population was scaled up, road and transit system did not change much in two years, etc.
 
