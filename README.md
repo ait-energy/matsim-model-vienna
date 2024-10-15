@@ -86,7 +86,9 @@ This plot shows modal splits for the whole simulation region:
 
 ## Highlights
 
-The model's highlights are **different values of travel time for subpopulations**.
+The model's highlights are
+**the inclusion of source, destination and through traffic (cordon traffic)** and
+**different values of travel time for subpopulations**.
 
 ### Cordon Traffic
 
