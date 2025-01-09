@@ -14,7 +14,7 @@
     <!--<param name="insistingOnUsingDeprecatedPersonAttributeFile" value="true"/>
     <param name="inputPersonAttributesFile" value="mappingPersIdToSubpop.xml.gz"/>-->
   </module>
-  <module name="controler">
+  <module name="controller">
     <param name="lastIteration" value="750"/>
     <param name="writeEventsInterval" value="250"/>
     <param name="writePlansInterval" value="250"/>
@@ -23,7 +23,7 @@
     <param name="writeTripsInterval" value="250"/>
     <param name="writeSnapshotsInterval" value="250"/>
   </module>
-  <module name="planscalcroute">
+  <module name="routing">
     <param name="networkModes" value="car"/>
   </module>
   <module name="qsim">
@@ -72,9 +72,9 @@
     <param name="countsScaleFactor" value="8.333333333"/>
     <param name="inputCountsFile" value="counts_90perc.xml"/>
   </module>-->
-  <module name="planCalcScore">
-    <param name="BrainExpBeta" value="1.0"/>
-    <param name="PathSizeLogitBeta" value="1.0"/>
+  <module name="scoring">
+    <param name="brainExpBeta" value="1.0"/>
+    <param name="pathSizeLogitBeta" value="1.0"/>
     <param name="fractionOfIterationsToStartScoreMSA" value="null"/>
     <param name="learningRate" value="1.0"/>
     <param name="usingOldScoringBelowZeroUtilityDuration" value="false"/>
@@ -2914,7 +2914,7 @@
       </parameterset>
     </parameterset>
   </module>
-  <module name="strategy">
+  <module name="replanning">
     <param name="ExternalExeConfigTemplate" value="null"/>
     <param name="ExternalExeTimeOut" value="3600"/>
     <param name="ExternalExeTmpFileRootDir" value="null"/>
