@@ -31,6 +31,7 @@ The model was developed using MATSim 16 but should also work with older (and new
 - **Population synthesis**: based on the Austrian mobility survey *Österreich Unterwegs 2013/14* by Tomschy et al. (2016) with [ARUP PAM](https://github.com/arup-group/pam), scaled up to population of 2020
 - **Population**: 332k agents represent 12.5% of the mobile population older than 5 years.
   - Agents use the MATSim modes walk, bike, pt, car, ride.
+  - 1.1M trips in total
   - Trips include inside, source, destination and through traffic (see cordon traffic)
   - Traffic by foreign citizens is not included (except for cargo traffic)
 - **Cargo traffic**: represented as ~10% reduction in `flowCapacityFactor` and `storageCapacityFactor` and a reduction of all count stations.
